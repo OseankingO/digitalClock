@@ -37,10 +37,13 @@ export class DigitalClockComponentComponent implements OnInit {
     this.hour = date.getHours();
 
     this.ampm = this.hour >= 12 ? 1 : -1;
+    console.log(this.ampm);
     this.ampmStr = this.ampm == 1 ? "PM" : "AM";
 
     this.hour = this.hour % 12;
-    this.hour = this.hour == 0 ? 12 : this.hour;
+    if(this.ampm == 1 && this.hour == 0) {
+      this.hour = 12;
+    }
     this.hourStr = this.hour < 10 ? "0" + this.hour.toString() : this.hour.toString();
 
     this.minute = date.getMinutes();
@@ -55,15 +58,21 @@ export class DigitalClockComponentComponent implements OnInit {
     if(this.second >= 60) {
       this.minute += 1;
       this.second = 0;
+      if(this.minute >= 60) {
+        this.hour += 1;
+        this.minute = 0;
+        if(this.ampm == -1 && this.hour == 12) {
+          this.ampm *= -1;
+        } else if(this.ampm == 1 && this.hour > 12) {
+          this.hour = 1;
+        } else if(this.ampm == 1 && this.hour > 11) {
+          this.ampm *= -1;
+          this.hour = 0;
+        }
+      }
     }
-    if(this.minute >= 60) {
-      this.hour += 1;
-      this.minute = 0;
-    }
-    if(this.hour > 12) {
-      this.ampm *= -1;
-      this.hour = 1;
-    }
+    
+    
     this.secondStr = this.second < 10 ? "0" + this.second.toString() : this.second.toString();
     this.minuteStr = this.minute < 10 ? "0" + this.minute.toString() : this.minute.toString();
     this.hourStr = this.hour < 10 ? "0" + this.hour.toString() : this.hour.toString();
@@ -85,8 +94,10 @@ export class DigitalClockComponentComponent implements OnInit {
     this.hour = Number(event.target.value);
     if(isNaN(this.hour)) {
       alert("Please Enter Number!");
-    }else if(this.hour > 12 || this.hour < 1) {
-      alert("Please Enter Number Between 1 - 12");
+    } else if(this.ampm == -1 && (this.hour > 11 || this.hour < 0)) {
+      alert("Please Enter Number Between 0 - 11 for AM");
+    } else if(this.ampm == 1 && (this.hour > 12 || this.hour < 1)) {
+      alert("Please Enter Number Between 1 - 12 for PM");
     } else {
       this.startCounting();
     }
@@ -117,11 +128,19 @@ export class DigitalClockComponentComponent implements OnInit {
   saveAmpm(event) {
     let val = event.target.value;
     if(val.toLowerCase() == "pm") {
-      this.ampm = 1;
-      this.startCounting();
+      if(this.hour < 1 || this.hour > 12) {
+        alert("Only have 1PM to 12PM");
+      } else {
+        this.ampm = 1;
+        this.startCounting();
+      }
     } else if(val.toLowerCase() == "am") {
-      this.ampm = -1;
-      this.startCounting();
+      if(this.hour < 0 || this.hour > 11) {
+        alert("Only have 0AM to 11AM");
+      } else {
+        this.ampm = -1;
+        this.startCounting();
+      }
     } else {
       alert("Please Enter AM or PM!");
     }
