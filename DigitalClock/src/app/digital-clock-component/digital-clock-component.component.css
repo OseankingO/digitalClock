@@ -1,0 +1,37 @@
+:host {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.digitalClock {
+    margin-top: 40px;
+    width: 300px;
+    height: 150px;
+    border-width: 7px;
+    border-style: solid;
+    text-align: center;
+}
+
+.title {
+    display: flex;
+    width: 300px;
+    height: 50px;
+    font-size: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+.digitalTime {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.time {
+    width: 25px;
+    font-size: 15px;
+    border-width: 0px;
+    text-align: center;
+}

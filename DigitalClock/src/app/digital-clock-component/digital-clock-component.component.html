@@ -1,0 +1,13 @@
+<div class="digitalClock">
+    <h1 class="title">
+        London Clock
+    </h1>
+    <div class="digitalTime">
+        <input class="time" type="text" [value]="hourStr" (click) = "stopCounting()" (keydown.enter)="saveHour($event)">
+        <span>:</span>
+        <input class="time" type="text" [value]="minuteStr" (click) = "stopCounting()" (keydown.enter)="saveMinute($event)">
+        <span>:</span>
+        <input class="time" type="text" [value]="secondStr" (click) = "stopCounting()" (keydown.enter)="saveSecond($event)">
+        <input class="time" type="text" [value]="ampmStr" (click) = "stopCounting()" (keydown.enter)="saveAmpm($event)">
+    </div>
+</div>
