@@ -1,13 +1,13 @@
-<div class="digitalClock">
+<div class="digitalClock" (keydown.enter)="saveAll()">
     <h1 class="title">
         London Clock
     </h1>
     <div class="digitalTime">
-        <input class="time" type="text" [value]="hourStr" (click) = "stopCounting()" (keydown.enter)="saveHour($event)">
+        <input class="time" type="text" [(ngModel)]="hourStr" (click)="stopCounting()">
         <span>:</span>
-        <input class="time" type="text" [value]="minuteStr" (click) = "stopCounting()" (keydown.enter)="saveMinute($event)">
+        <input class="time" type="text" [(ngModel)]="minuteStr" (click)="stopCounting()">
         <span>:</span>
-        <input class="time" type="text" [value]="secondStr" (click) = "stopCounting()" (keydown.enter)="saveSecond($event)">
-        <input class="time" type="text" [value]="ampmStr" (click) = "stopCounting()" (keydown.enter)="saveAmpm($event)">
+        <input class="time" type="text" [(ngModel)]="secondStr" (click)="stopCounting()">
+        <input class="time" type="text" [(ngModel)]="ampmStr" (click)="stopCounting()">
     </div>
 </div>

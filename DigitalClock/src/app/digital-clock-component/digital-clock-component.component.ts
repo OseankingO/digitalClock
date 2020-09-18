@@ -18,19 +18,14 @@ export class DigitalClockComponentComponent implements OnInit {
   public secondStr: string;
   public ampmStr: string; 
 
-  private updating: boolean;
-
   private counter;
   
   constructor() { }
 
   ngOnInit(): void {
     const date = new Date();
-    this.updating = false;
     this.initTime(date);
-    this.counter = setInterval(() => {
-      this.updateTime();
-    }, 1000)
+    this.startCounting();
   }
 
   private initTime(date: Date) {
@@ -41,9 +36,15 @@ export class DigitalClockComponentComponent implements OnInit {
     this.ampmStr = this.ampm == 1 ? "PM" : "AM";
 
     this.hour = this.hour % 12;
-    if(this.ampm == 1 && this.hour == 0) {
-      this.hour = 12;
-    }
+
+    // version 1
+    // if(this.ampm == 1 && this.hour == 0) {
+    //   this.hour = 12;
+    // }
+
+    // version 2
+    this.hour = this.hour == 0 ? 12 : this.hour;
+
     this.hourStr = this.hour < 10 ? "0" + this.hour.toString() : this.hour.toString();
 
     this.minute = date.getMinutes();
@@ -61,13 +62,22 @@ export class DigitalClockComponentComponent implements OnInit {
       if(this.minute >= 60) {
         this.hour += 1;
         this.minute = 0;
-        if(this.ampm == -1 && this.hour == 12) {
+
+        // version 1
+        // if(this.ampm == -1 && this.hour == 12) {
+        //   this.ampm *= -1;
+        // } else if(this.ampm == 1 && this.hour > 12) {
+        //   this.hour = 1;
+        // } else if(this.ampm == 1 && this.hour > 11) {
+        //   this.ampm *= -1;
+        //   this.hour = 0;
+        // }
+
+        // version 2
+        if(this.hour == 12) {
           this.ampm *= -1;
-        } else if(this.ampm == 1 && this.hour > 12) {
+        } else if(this.hour > 12) {
           this.hour = 1;
-        } else if(this.ampm == 1 && this.hour > 11) {
-          this.ampm *= -1;
-          this.hour = 0;
         }
       }
     }
@@ -90,59 +100,99 @@ export class DigitalClockComponentComponent implements OnInit {
     clearInterval(this.counter);
   }
 
-  saveHour(event) {
-    this.hour = Number(event.target.value);
+  saveHour() {
+    this.hour = Number(this.hourStr);
     if(isNaN(this.hour)) {
-      alert("Please Enter Number!");
-    } else if(this.ampm == -1 && (this.hour > 11 || this.hour < 0)) {
-      alert("Please Enter Number Between 0 - 11 for AM");
-    } else if(this.ampm == 1 && (this.hour > 12 || this.hour < 1)) {
-      alert("Please Enter Number Between 1 - 12 for PM");
-    } else {
-      this.startCounting();
+      alert("Please Enter Number In Hour!");
+    } 
+    
+    // version 1
+    // else if(this.ampm == -1 && (this.hour > 11 || this.hour < 0)) {
+    //   alert("Please Enter Number Between 0 - 11 for AM In Hour!");
+    // } else if(this.ampm == 1 && (this.hour > 12 || this.hour < 1)) {
+    //   alert("Please Enter Number Between 1 - 12 for PM In Hour!");
+    // } 
+
+    // version 2
+    else if(this.hour > 12 || this.hour < 1) {
+      alert("Please Enter Number Between 1 - 12 In Hour!");
     }
+
+    else {
+      return true;
+    }
+    return false;
   }
 
-  saveMinute(event) {
-    this.minute = Number(event.target.value);
+  saveMinute() {
+    this.minute = Number(this.minuteStr);
     if(isNaN(this.minute)) {
-      alert("Please Enter Number!");
+      alert("Please Enter Number In Minute!");
     }else if(this.minute > 59 || this.minute < 0) {
-      alert("Please Enter Number Between 0 - 59");
+      alert("Please Enter Number Between 0 - 59 In Minute!");
     } else {
-      this.startCounting();
+      return true;
     }
+    return false;
   }
 
-  saveSecond(event) {
-    this.second = Number(event.target.value);
+  saveSecond() {
+    this.second = Number(this.secondStr);
     if(isNaN(this.second)) {
-      alert("Please Enter Number!");
+      alert("Please Enter Number In Second!");
     }else if(this.second > 59 || this.second < 0) {
-      alert("Please Enter Number Between 0 - 59");
+      alert("Please Enter Number Between 0 - 59 In Second!");
     } else {
-      this.startCounting();
+      return true;
     }
+    return false;
   }
 
-  saveAmpm(event) {
-    let val = event.target.value;
+  saveAmpm() {
+    let val = this.ampmStr;
     if(val.toLowerCase() == "pm") {
-      if(this.hour < 1 || this.hour > 12) {
-        alert("Only have 1PM to 12PM");
-      } else {
-        this.ampm = 1;
-        this.startCounting();
-      }
+
+      // version 1
+      // if(this.hour < 1 || this.hour > 12) {
+      //   alert("Only have 1PM to 12PM, Change Your AM OR PM!");
+      // } else {
+      //   this.ampm = 1;
+      //   return true;
+      // }
+
+      // version 2
+      this.ampm = 1;
+      return true;
+
     } else if(val.toLowerCase() == "am") {
-      if(this.hour < 0 || this.hour > 11) {
-        alert("Only have 0AM to 11AM");
-      } else {
-        this.ampm = -1;
-        this.startCounting();
-      }
+
+      // version 1
+      // if(this.hour < 0 || this.hour > 11) {
+      //   alert("Only have 0AM to 11AM, Change Your AM OR PM!");
+      // } else {
+      //   this.ampm = -1;
+      //   return true;
+      // }
+
+      // version 2
+      this.ampm = -1;
+      return true;
+
     } else {
       alert("Please Enter AM or PM!");
+    }
+    return false;
+  }
+
+  saveAll() {
+    if(this.saveSecond()) {
+      if(this.saveMinute()) {
+        if(this.saveHour()) {
+          if(this.saveAmpm()) {
+            this.startCounting();
+          }
+        }
+      }
     }
   }
 }
